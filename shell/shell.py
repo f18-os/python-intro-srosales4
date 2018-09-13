@@ -1,60 +1,65 @@
-import os, sys
+#! /usr/bin/env python3
 
-rc = 1
-pid = os.getpid()
-command = "tixe"
+# The following code is CV'd from:
+# https://github.com/robustUTEP/os-demos/blob/master/ch5-api/p4-redirect.py
 
-os.write(1, ("About to fork (pid:%d)\n" % pid).encode() )
+# TODO: read: https://stackoverflow.com/questions/4204915/please-explain-the-exec-function-and-its-family#4205020 TDTDTDTDTDTDTDTD
+# To get another viewpoint on the topics of fork() and exec() read:
+
+import os, sys, time, re
+
+pid = os.getpid()               # get and remember pid
+
+os.write(1, ("About to fork (pid=%d)\n" % pid).encode())
+
 rc = os.fork()
 
 if rc < 0:
-	os.write(2, ("fork failed, returning %d\n" % rc).encode() )
-	sys.exit(1)
-elif rc == 0:
-	os.write(1, ("I'm a child. My pid==%d. Parent's pid==%d\n" % (os.getpid(), pid) ).encode() )
+    os.write(2, ("fork failed, returning %d\n" % rc).encode())
+    sys.exit(1)
 
-	# while (command != "exit"):
-	# 	# raw_input was renamed to input http://docs.python.org/dev/py3k/whatsnew/3.0.html
-	# 	command = input("minersh:: ")
-	# 	command.strip()
-	# 	userInput = command.split(" ")
+elif rc == 0:                   # child
+    
+    while True:
+        os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % 
+                     (os.getpid(), pid)).encode())
+        args = input('minersh:: ')
+        tokens = args.split(' ')
 
-	# 	if userInput[0] != "":
-	# 		os.write(1, ("About to exit (pid:%d)\n" % pid).encode() )
-	# 		rc = os.exit()
-	command = input('type something:: ')
-	if command == "\0":
-		os.write(1, ("About to fork (pid:%d)\n" % pid).encode() )
-		rc = os.fork()
-		os.wait()
+        for dir in re.split(':', os.environ['PATH']): # try each directory in path
+            program = "%s/%s" % (dir, tokens[0])
+            try:
+                os.execve(program, tokens[1:], os.environ) # try to exec program
+            except OSError as e:                      # ...expected
+                os.write(2, ("%s\n" % e).encode() )
+                pass                                       # ...fail quietly
 
-else:
-	os.write(1, ("I'm a parent. My pid==%d. Parent's pid==%d\n" % (pid, rc) ).encode() )
-
-	command = input('minersh::')
-	command.strip()
-
-	if command == "\0":
-		os.write(1, ("About to fork (pid:%d)\n" % pid).encode() )
-		rc = os.fork()
-		os.wait()
-
-# while (command != "exit"):
-# 	command = input('minersh::\n')
-# 	userInput = command.split(" ")
-
-	# QUESTION: Do we fork before or after we find the program?
+        # for dir in re.split(":", os.environ['PATH']): # try each directory in path
+        #     program = "%s/%s" % (dir, tokens[0])
+        #     try:
+        #         os.execve(program, tokens[1:], os.environ) # try to exec program
+        #     except FileNotFoundError:             # ...expected
+        #         pass                              # ...fail quietly
 
 
-	# if ".py" in userInput[0]:
-	# 	pythonFile = userInput[0]
-	# 	io = 'python3 %s %s %s' % (pythonFile, userInput[1], userInput[2])
-	# 	os.system(io)
-	# elif "." not in userInput[0]:
-	# 	os.system(command)
+    # !!!!!!!!!!!   WHAT DOES THIS LINE DO?   !!!!!!!!!!!!!!!!!!!!!
+    #os.close(1)                 # redirect child's stdout
 
+    #sys.stdout = open("shell-output.txt", "w")
 
-# "wordCount.py testFile.txt myOutput.txt"
-# "cat wordCount.py"
+    # !!!!!!!!!!!   WHAT DO THESE TWO LINES DO?   !!!!!!!!!!!!!!!!!!!!!
+    #fd = sys.stdout.fileno() # Oh!!!  I think this line looks for the lowest fd that's available
+    #os.set_inheritable(fd, True)  # TODO: I need to look up what this func does TDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTD
 
-# METHODS FOR SHELL API
+    
+    #os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
+
+    os.write(2, ("Child:    Error: Could not exec %s\n" % args[0]).encode())
+    #sys.exit(1)                 # terminate with error
+
+else:                           # parent (forked ok)
+    os.write(1, ("Parent: My pid=%d.  Child's pid=%d\n" % 
+                 (pid, rc)).encode())
+    childPidCode = os.wait()
+    os.write(1, ("Parent: Child %d terminated with exit code %d\n" % 
+                 childPidCode).encode())
