@@ -34,43 +34,19 @@ elif rc == 0:
             os.write(2, ("%s\n" % e).encode() )
             pass                                       # ...fail quietly
 
-        # for dir in re.split(":", os.environ['PATH']): # try each directory in path
-        #     program = "%s/%s" % (dir, tokens[0])
-        #     try:
-        #         os.execve(program, tokens[1:], os.environ) # try to exec program
-        #     except FileNotFoundError:             # ...expected
-        #         pass                              # ...fail quietly
-
-
-    # !!!!!!!!!!!   WHAT DOES THIS LINE DO?   !!!!!!!!!!!!!!!!!!!!!
-    #os.close(1)                 # redirect child's stdout
-
-    #sys.stdout = open("shell-output.txt", "w")
-
-    # !!!!!!!!!!!   WHAT DO THESE TWO LINES DO?   !!!!!!!!!!!!!!!!!!!!!
-    #fd = sys.stdout.fileno() # Oh!!!  I think this line looks for the lowest fd that's available
-    #os.set_inheritable(fd, True)  # TODO: I need to look up what this func does TDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTDTD
-
-    
-    #os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
-
-    os.write(2, ("Child:    Error: Could not exec %s\n" % args[0]).encode())
-    #sys.exit(1)                 # terminate with error
-
 else:                           # parent (forked ok)
     childPidCode = os.wait()
+    os.write(1, ("Parent: My pid=%d.  Child's pid=%d\n" % (pid, rc)).encode())
 
     command = ""
-    while True:
-        os.write(1, ("Parent: My pid=%d.  Child's pid=%d\n" % 
-                 (pid, rc)).encode())
+    while command != "exit":
         command = input('$ ')
         tokens = tokenize(' ', command)
 
+        # Not sure if I even need this line???
         if tokens[0] == '':
             break
         os.write(1, ("%s\n" % tokens).encode() )
-        os.fork()
 
     os.write(1, ("Parent: Child %d terminated with exit code %d\n" % 
                  childPidCode).encode())

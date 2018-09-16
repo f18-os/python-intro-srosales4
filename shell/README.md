@@ -11,8 +11,8 @@ https://github.com/robustUTEP/os-shell/blob/master/README.md
 
 Using your tokenizer and the system calls fork(), exec(), and wait() create a simple shell that:
 
-- [X] prints a command prompt which is "$ " and waits for the user to enter a command
-- [ ] parse the command using your tokenizer 
+- [X] ~~prints a command prompt which is "$ " and waits for the user to enter a command~~
+- [X] ~~parse the command using your tokenizer~~
 - [ ] create a child process that uses execve to run the command with its arguments.  
 - [ ] If an absolute path is not specified, your shell should instead find it using the $PATH environment variable.
 - [X] ~~the parent process should wait for the child to terminate before printing another command prompt.~~
