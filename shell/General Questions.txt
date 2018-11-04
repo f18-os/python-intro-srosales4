@@ -1,0 +1,5 @@
+When the child dies the the parent process start again from the beginning? Or does it pick off from the line after the fork()?
+
+Is there a way to coordinate messages or interlock actions between the child and parent?  How can I get a for loop in the child and parent to alternate between printing from the child and from the parent?
+
+What about piping with 3 or more children?  How would the activity chart look?

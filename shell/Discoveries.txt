@@ -1,0 +1,9 @@
+wait()
+	-) can only be called from parent
+	-) returns function back to parent after child “dies,” i.e., is completely 
+	   done
+
+
+input() returns a list who’s length is 6 but I can’t find out what all six items
+	are because when my condition is set to print out the arguments when input() 
+	returns a list that is longer than zero, I only get the first arg
