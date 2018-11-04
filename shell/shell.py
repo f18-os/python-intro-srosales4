@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
 import os, sys, time, re
-from wordCount import tokenize
-from utilities import runProgram
+from utilities import tokenize, runProgram, exitShell
 
 """ The following is based on:
 	-) https://github.com/robustUTEP/os-demos/blob/master/ch5-api/p3-exec.py
@@ -14,9 +13,16 @@ status = sys.maxsize
 args = ''
 
 while True:
-	args = input("$ ").split(' ')
+	args = tokenize(' ', input("$ "))
 
-	if len(args) == 1 and args[0] == '':
+	if args[0] == 'exit':
+		exitShell(args)
+
+	elif args[0] == 'pwd':
+		os.write(1, (os.getcwd()+'\n').encode())
+		continue
+
+	elif len(args) == 1 and args[0] == '':
 		os.write(2, ("No input\n").encode())
 		continue
 	else:

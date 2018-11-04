@@ -5,9 +5,13 @@ import os, sys, time, re
 	-) https://brennan.io/2015/01/16/write-a-shell-in-c/
 """
 
-def parseArguments(commandLineCommand):
-	ap = argparse.ArgumentParser()
-	args = ap.pars_agrs()
+def tokenize(symbol, stringInput):
+	# attempt to open input file
+
+    tokens = re.compile('\W')
+    listOfTokens = stringInput.split(symbol)
+
+    return listOfTokens
 
 
 def runProgram(args):
@@ -52,6 +56,15 @@ def execProgram(args):
 			pass
 
 	# else something went wrong
-	os.write(2, ("Could not exec %s\n" % args[0]).encode())
+	os.write(2, ("command not found: %s\n" % args[0]).encode())
 	# and return -1 to signal an error
 	return -1
+
+def exitShell(args):
+	sys.exit(0)
+
+def getWorkingDirectory():
+	os.getcwd()
+
+# def changeDirectory(path):
+
