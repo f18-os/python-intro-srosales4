@@ -7,15 +7,15 @@ https://github.com/robustUTEP/os-shell/blob/master/README.md
 Using your tokenizer and the system calls fork(), exec(), and wait() create a simple shell that:
 
 - [X] prints a command prompt which is "$ " and waits for the user to enter a command
-- [ ] parse the command using your tokenizer 
-- [ ] create a child process that uses execve to run the command with its arguments.  
+- [X] parse the command using your tokenizer 
+- [X] create a child process that uses execve to run the command with its arguments.  
 - [ ] If an absolute path is not specified, your shell should instead find it using the $PATH environment variable.
-- [X] ~~the parent process should wait for the child to terminate before printing another command prompt.~~
+- [X] the parent process should wait for the child to terminate before printing another command prompt.
   - At least I think my `os.wait` line under the `else:` block would cover this req.
-- [ ] print "command not found" if the command is not found
+- [X] print "command not found" if the command is not found
 - [ ] if the command fails (with a non-zero exit value N), your shell should print "Program terminated with exit code N."
 - [X] empty commands should do nothing
-- [ ] ~~the "exit" command should cause your shell to terminate.~~
+- [X] the "exit" command should cause your shell to terminate.
 
 We have provided a program called argDemo (tokenizer tester) which is meant to test your tokenizer. Compile and add this program to your PATH 
 environment variable before running your shell.
@@ -38,7 +38,7 @@ In this lab, you will create a user shell in the C programming language that can
 - [ ] simple commands (e.g. $ /bin/ls or $ ls )
 - [ ] simple pipes (e.g. $ /bin/ls | /bin/sort -r)
 - [ ] background tasks (e.g. $ find /etc -print & )
-- [ ] "cd" ## for "cd" you will need to lookup the library routine "chdir" in the (online) unix manual
+- [X] "cd" ## for "cd" you will need to lookup the library routine "chdir" in the (online) unix manual
 
 You have additional components required for testing this part of the shell. See the section below for further details.
 
@@ -59,10 +59,10 @@ Your lab must directly use the posix calls:
 - [ ] pipe()
 - [X] fork()
 - [ ] dup() or dup2()
-- [ ] execve() (you cannot use execvp)
+- [X] execve() (you cannot use execvp)
 - [X] wait()
 - [ ] open() and close()
-- [ ] chdir()
+- [X] chdir()
 
 These system calls are documented in chapter 2 of the unix manual (e.g. $ man 2 fork).
 
