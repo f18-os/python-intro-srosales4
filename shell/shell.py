@@ -2,6 +2,7 @@
 
 import os, sys, time, re
 from utilities import tokenize, runProgram, exitShell
+from utilities import changeDirectory
 
 """ The following is based on:
 	-) https://github.com/robustUTEP/os-demos/blob/master/ch5-api/p3-exec.py
@@ -19,7 +20,15 @@ while True:
 		exitShell(args)
 
 	elif args[0] == 'pwd':
+		# print the working directory
 		os.write(1, (os.getcwd()+'\n').encode())
+		continue
+
+	elif args[0] == 'cd':
+		try:
+			os.chdir(args[1])
+		except:
+			os.write(2, ("path not valid: %s\n" % args[1]).encode())
 		continue
 
 	elif len(args) == 1 and args[0] == '':

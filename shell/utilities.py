@@ -66,5 +66,7 @@ def exitShell(args):
 def getWorkingDirectory():
 	os.getcwd()
 
-# def changeDirectory(path):
+def changeDirectory(path):
+	if not os.chdir(path) == 0:
+		os.write(2, ("path not valid").encode())
 
